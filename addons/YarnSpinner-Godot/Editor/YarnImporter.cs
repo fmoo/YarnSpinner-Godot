@@ -55,7 +55,7 @@ public partial class YarnImporter : EditorImportPlugin
         var saveErr = ResourceSaver.Save(importedMarkerResource, $"{savePath}.{_GetSaveExtension()}");
         if (saveErr != Error.Ok)
         {
-            GD.PrintErr($"Error saving yarn file import: {saveErr.ToString()}");
+            GD.PrintErr($"Error saving yarn file import: {saveErr}");
         }
 
         return (int) Error.Ok;
@@ -70,10 +70,8 @@ public partial class YarnImporter : EditorImportPlugin
     /// <returns>The hash of <paramref name="inputString"/>.</returns>
     private static byte[] GetHash(string inputString)
     {
-        using (HashAlgorithm algorithm = SHA256.Create())
-        {
-            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
-        }
+        using HashAlgorithm algorithm = SHA256.Create();
+        return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
     }
 
     /// <summary>
@@ -108,8 +106,7 @@ public partial class YarnImporter : EditorImportPlugin
         }
     }
 
-
-    private void ImportYarn(string assetPath)
+    private static void ImportYarn(string assetPath)
     {
         GD.Print($"Importing Yarn script {assetPath}");
         var projectPath = YarnProjectEditorUtility.GetDestinationProjectPath(assetPath);

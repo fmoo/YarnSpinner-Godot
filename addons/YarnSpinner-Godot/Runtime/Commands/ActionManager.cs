@@ -8,7 +8,6 @@ using Godot;
 using Yarn;
 using Node = Godot.Node;
 
-
 namespace YarnSpinnerGodot;
 
 using Injector = Func<string, object>;
@@ -228,20 +227,11 @@ public static class ActionManager
 
     private static void FindAllActions()
     {
-        if (commands == null)
-        {
-            commands = new Dictionary<string, DispatchCommand>();
-        }
+        commands ??= new Dictionary<string, DispatchCommand>();
 
-        if (functions == null)
-        {
-            functions = new Dictionary<string, Delegate>();
-        }
+        functions ??= new Dictionary<string, Delegate>();
 
-        if (searchedAssemblyNames == null)
-        {
-            searchedAssemblyNames = new HashSet<string>();
-        }
+        searchedAssemblyNames ??= new HashSet<string>();
         var injectorCache = new Dictionary<string, Injector>();
 
         // Find the assemblies we're looking for
@@ -311,18 +301,18 @@ public static class ActionManager
     /// <summary>
     /// The Yarn commands that we have found.
     /// </summary>
-    private static Dictionary<string, DispatchCommand> commands = new Dictionary<string, DispatchCommand>();
+    private static Dictionary<string, DispatchCommand> commands = new();
 
     /// <summary>
     /// The Yarn functions that we have found.
     /// </summary>
-    private static Dictionary<string, Delegate> functions = new Dictionary<string, Delegate>();
+    private static Dictionary<string, Delegate> functions = new();
 
     /// <summary>
     /// A list of names of assemblies that we have searched for commands and
     /// functions.
     /// </summary>
-    private static HashSet<string> searchedAssemblyNames = new HashSet<string>();
+    private static HashSet<string> searchedAssemblyNames = new();
 
     /// <summary>
     /// Try to execute a command if it exists.

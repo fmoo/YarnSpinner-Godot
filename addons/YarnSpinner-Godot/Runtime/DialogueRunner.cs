@@ -228,7 +228,7 @@ public partial class DialogueRunner : Godot.Node
     /// Gets the underlying <see cref="Dialogue"/> object that runs the
     /// Yarn code.
     /// </summary>
-    public Dialogue Dialogue => _dialogue ?? (_dialogue = CreateDialogueInstance());
+    public Dialogue Dialogue => _dialogue ??= CreateDialogueInstance();
 
     /// <summary>
     /// A flag used to detect if an options handler attempts to set the
@@ -707,13 +707,13 @@ public partial class DialogueRunner : Godot.Node
     ///  The collection of dialogue views that are currently either
     ///  delivering a line, or dismissing a line from being on screen.
     /// </summary>
-    private readonly HashSet<Node> ActiveDialogueViews = new HashSet<Node>();
+    private readonly HashSet<Node> ActiveDialogueViews = new();
 
     Action<int> selectAction;
 
     /// Maps the names of commands to action delegates.
     System.Collections.Generic.Dictionary<string, Delegate> commandHandlers =
-        new System.Collections.Generic.Dictionary<string, Delegate>();
+        new();
 
     /// <summary>
     /// The underlying object that executes Yarn instructions
@@ -794,9 +794,9 @@ public partial class DialogueRunner : Godot.Node
                 GD.Print($"Dialogue Runner has no LineProvider; creating a {nameof(TextLineProvider)}.", this);
             }
         }
-        else if (lineProvider.YarnProject == null)
+        else
         {
-            lineProvider.YarnProject = yarnProject;
+            lineProvider.YarnProject ??= yarnProject;
         }
 
         if (startAutomatically)
@@ -813,7 +813,6 @@ public partial class DialogueRunner : Godot.Node
             }
         }
     }
-
 
     Dialogue CreateDialogueInstance()
     {
@@ -978,7 +977,6 @@ public partial class DialogueRunner : Godot.Node
         // dialogue, so we'll continue it now.
         ContinueDialogue();
     }
-
 
     /// <summary>
     /// Forward the line to the dialogue UI.
@@ -1277,7 +1275,7 @@ public partial class DialogueRunner : Godot.Node
     /// <returns><see langword="true"/> if the command was successfully
     /// dispatched to a Godot Node; <see langword="false"/> if no game
     /// object was registered as a handler for the command.</returns>
-    public async Task<CommandDispatchResult> DispatchCommandToNode(Command command,
+    public static async Task<CommandDispatchResult> DispatchCommandToNode(Command command,
         Action onSuccessfulDispatch)
     {
         // Call out to the string version of this method, because
@@ -1291,7 +1289,7 @@ public partial class DialogueRunner : Godot.Node
     /// <inheritdoc cref="DispatchCommandToNode"/>
     /// <param name="command">The text of the command to
     /// dispatch.</param>
-    public async Task<CommandDispatchResult> DispatchCommandToNode(string command,
+    public static async Task<CommandDispatchResult> DispatchCommandToNode(string command,
         System.Action onSuccessfulDispatch)
     {
         if (string.IsNullOrEmpty(command))
@@ -1538,7 +1536,7 @@ public partial class DialogueRunner : Godot.Node
                     {
                         // Possibly an escaped character!
                         var next = reader.Peek();
-                        if (next == '\\' || next == '\"')
+                        if (next is '\\' or '\"')
                         {
                             // It is! Skip the \ and use the character after it.
                             reader.Read();
@@ -1660,7 +1658,7 @@ public partial class DialogueRunner : Godot.Node
     // takes in a JSON string and converts it into a tuple of dictionaries
     // intended to let you just dump these straight into the variable storage
     // throws exceptions if unable to convert or if the conversion half works
-    private (System.Collections.Generic.Dictionary<string, float>,
+    private static (System.Collections.Generic.Dictionary<string, float>,
         System.Collections.Generic.Dictionary<string, string>,
         System.Collections.Generic.Dictionary<string, bool>)
         DeserializeAllVariablesFromJSON(string jsonData)
@@ -1722,7 +1720,7 @@ public partial class DialogueRunner : Godot.Node
     {
         (var floats, var strings, var bools) = variableStorage.GetAllVariables();
 
-        SaveData data = new SaveData();
+        SaveData data = new();
         data.floatKeys = floats.Keys.ToArray();
         data.floatValues = floats.Values.ToArray();
         data.stringKeys = strings.Keys.ToArray();

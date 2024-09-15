@@ -77,10 +77,10 @@ public static class YarnProjectEditorUtility
     private const int PROJECT_UPDATE_TIMEOUT = 80; // ms 
 
     private static ConcurrentDictionary<string, DateTime> _projectPathToLastUpdateTime =
-        new ConcurrentDictionary<string, DateTime>();
+        new();
 
-    private static Dictionary<string, Task> _projectPathToUpdateTask = new Dictionary<string, Task>();
-    private static object _lastUpdateLock = new object();
+    private static Dictionary<string, Task> _projectPathToUpdateTask = new();
+    private static object _lastUpdateLock = new();
 
     /// <summary>
     /// Queue up a re-compile of scripts in a yarn project, add all associated data to the project,
@@ -412,7 +412,7 @@ public static class YarnProjectEditorUtility
     {
         lock (project)
         {
-            List<FunctionInfo> newFunctionList = new List<FunctionInfo>();
+            List<FunctionInfo> newFunctionList = new();
             var assetPath = project.ResourcePath;
             GD.Print($"Compiling all scripts in {assetPath}");
 
@@ -447,7 +447,7 @@ public static class YarnProjectEditorUtility
                 errors = compilationResult.Value.Diagnostics.Where(d =>
                     d.Severity == Diagnostic.DiagnosticSeverity.Error);
 
-                if (errors.Count() > 0)
+                if (errors.Any())
                 {
                     var errorGroups = errors.GroupBy(e => e.FileName);
                     foreach (var errorGroup in errorGroups)
@@ -489,7 +489,7 @@ public static class YarnProjectEditorUtility
                 var newDeclarations = new List<Declaration>() //localDeclarations
                     .Concat(compilationResult.Value.Declarations)
                     .Where(decl => !decl.Name.StartsWith("$Yarn.Internal."))
-                    .Where(decl => !(decl.Type is FunctionType))
+                    .Where(decl => decl.Type is not FunctionType)
                     .Select(decl =>
                     {
                         SerializedDeclaration existingDeclaration = null;
@@ -514,15 +514,13 @@ public static class YarnProjectEditorUtility
 
                 CreateYarnInternalLocalizationAssets(project, compilationResult.Value);
 
-                using (var memoryStream = new MemoryStream())
-                using (var outputStream = new CodedOutputStream(memoryStream))
-                {
-                    // Serialize the compiled program to memory
-                    compilationResult.Value.Program.WriteTo(outputStream);
-                    outputStream.Flush();
+                using var memoryStream = new MemoryStream();
+                using var outputStream = new CodedOutputStream(memoryStream);
+                // Serialize the compiled program to memory
+                compilationResult.Value.Program.WriteTo(outputStream);
+                outputStream.Flush();
 
-                    compiledBytes = memoryStream.ToArray();
-                }
+                compiledBytes = memoryStream.ToArray();
             }
 
             project.ListOfFunctions = newFunctionList.ToArray();
@@ -614,7 +612,6 @@ public static class YarnProjectEditorUtility
     /// <seealso cref="assembliesToSearch"/>
     public static bool searchAllAssembliesForActions = true;
 
-
     private static void CreateYarnInternalLocalizationAssets(YarnProject project,
         CompilationResult compilationResult)
     {
@@ -678,7 +675,7 @@ public static class YarnProjectEditorUtility
         var errors =
             compilationResult.Value.Diagnostics.Where(d => d.Severity == Diagnostic.DiagnosticSeverity.Error);
 
-        if (errors.Count() > 0)
+        if (errors.Any())
         {
             GD.PrintErr("Can't generate a strings table from a Yarn Project that contains compile errors", null);
             return null;
@@ -755,14 +752,13 @@ public static class YarnProjectEditorUtility
     {
         var cleanedMetadata = RemoveLineIDFromMetadata(metadata);
 
-        if (cleanedMetadata.Count() == 0)
+        if (!cleanedMetadata.Any())
         {
             return string.Empty;
         }
 
         return $"Line metadata: {string.Join(" ", cleanedMetadata)}";
     }
-
 
     /// <summary>
     /// Removes any line ID entry from an array of line metadata.
@@ -823,9 +819,7 @@ public static class YarnProjectEditorUtility
             if (containsErrors)
             {
                 GD.PrintErr($"Can't check for existing line tags in {path} because it contains errors.");
-                return new string[]
-                {
-                };
+                return Array.Empty<string>();
             }
 
             return result.StringTable.Where(i => i.Value.isImplicitTag == false).Select(i => i.Key);

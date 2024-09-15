@@ -239,7 +239,7 @@ public partial class LineView : Node, DialogueViewBase
     /// <summary>
     /// A stop token that is used to interrupt the current animation.
     /// </summary>
-    Effects.TaskInterruptToken currentStopToken = new Effects.TaskInterruptToken();
+    Effects.TaskInterruptToken currentStopToken = new();
 
     public override void _Ready()
     {
@@ -251,10 +251,7 @@ public partial class LineView : Node, DialogueViewBase
 
         lineText.VisibleCharactersBehavior = TextServer.VisibleCharactersBehavior.CharsAfterShaping;
 
-        if (viewControl == null)
-        {
-            viewControl = GetNode(viewControlPath) as Control;
-        }
+        viewControl ??= GetNode(viewControlPath) as Control;
 
         continueButton?.Connect("pressed", new Callable(this, nameof(OnContinueClicked)));
 
@@ -341,7 +338,6 @@ public partial class LineView : Node, DialogueViewBase
         }
         ConvertHTMLToBBCodeIfConfigured();
 
-
         // Show the entire line's text immediately.
         lineText.VisibleRatio = 1;
 
@@ -423,7 +419,6 @@ public partial class LineView : Node, DialogueViewBase
                 }
             }
 
-
             // if we have a palette file need to add those colours into the text
             if (IsInstanceValid(palette))
             {
@@ -447,7 +442,6 @@ public partial class LineView : Node, DialogueViewBase
                 // Show all characters
                 lineText.VisibleRatio = 1;
             }
-
 
             // If we're using the fade effect, start it, and wait for it to
             // finish.
@@ -606,7 +600,6 @@ public partial class LineView : Node, DialogueViewBase
         // example, if a DialogueAdvanceInput had signalled us.)
         UserRequestedViewAdvancement();
     }
-
 
     /// <inheritdoc />
     public void DialogueComplete()

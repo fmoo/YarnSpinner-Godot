@@ -40,7 +40,7 @@ namespace YarnSpinnerGodot;
 [GlobalClass]
 public partial class YarnProject : Resource
 {
-    public static JsonSerializerOptions JSONOptions = new JsonSerializerOptions {IncludeFields = true};
+    public static JsonSerializerOptions JSONOptions = new() {IncludeFields = true};
 
     /// <summary>
     /// File extension of JSON yarn project files.
@@ -82,7 +82,7 @@ public partial class YarnProject : Resource
 
     [Export] public string CompiledYarnProgramBase64;
 
-    public List<Resource> ScriptsWithParseErrors => new List<Resource>();
+    public static List<Resource> ScriptsWithParseErrors => new();
 
     [Export] public Localization baseLocalization;
 
@@ -319,10 +319,7 @@ public partial class YarnProject : Resource
     {
         get
         {
-            if (cachedProgram == null)
-            {
-                cachedProgram = Program.Parser.ParseFrom(CompiledYarnProgram);
-            }
+            cachedProgram ??= Program.Parser.ParseFrom(CompiledYarnProgram);
 
             return cachedProgram;
         }

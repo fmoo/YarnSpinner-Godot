@@ -6,7 +6,6 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using Godot;
 
-
 #if TOOLS
 using YarnSpinnerGodot.Editor;
 #endif
@@ -75,7 +74,7 @@ public partial class Localization : Resource
     }
     
     private System.Collections.Generic.Dictionary<string, string> _runtimeStringTable =
-        new System.Collections.Generic.Dictionary<string, string>();
+        new();
 
     /// <summary>
     /// The Resource containing CSV data that the Localization

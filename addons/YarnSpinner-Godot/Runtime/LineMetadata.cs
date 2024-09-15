@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-
 namespace YarnSpinnerGodot;
-
 
 [Serializable]
 [Tool]
@@ -14,7 +12,7 @@ public class LineMetadata
 {
 
     public Dictionary<string, LineMetadataTableEntry> lineMetadata =
-        new Dictionary<string, LineMetadataTableEntry>();
+        new();
 
     /// <summary>
     /// File where a CSV will be written to describing the metadata (optional)

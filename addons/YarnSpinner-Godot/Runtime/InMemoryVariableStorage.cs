@@ -65,10 +65,10 @@ public partial class InMemoryVariableStorage
     /// <summary>
     /// Where we're actually keeping our variables
     /// </summary>
-    private Dictionary<string, object> variables = new Dictionary<string, object>();
+    private Dictionary<string, object> variables = new();
 
     private Dictionary<string, System.Type>
-        variableTypes = new Dictionary<string, System.Type>(); // needed for serialization
+        variableTypes = new(); // needed for serialization
 
     public bool showDebug;
 
@@ -100,7 +100,6 @@ public partial class InMemoryVariableStorage
 
         return stringBuilder.ToString();
     }
-
 
     #region Setters
 
@@ -156,7 +155,7 @@ public partial class InMemoryVariableStorage
     /// <exception cref="System.ArgumentException">Thrown when
     /// <paramref name="variableName"/> is not a valid variable
     /// name.</exception> 
-    private void ValidateVariableName(string variableName)
+    private static void ValidateVariableName(string variableName)
     {
         if (variableName.StartsWith("$") == false)
         {
@@ -270,9 +269,9 @@ public partial class InMemoryVariableStorage
     public override (Dictionary<string, float>, Dictionary<string, string>, Dictionary<string, bool>)
         GetAllVariables()
     {
-        Dictionary<string, float> floatDict = new Dictionary<string, float>();
-        Dictionary<string, string> stringDict = new Dictionary<string, string>();
-        Dictionary<string, bool> boolDict = new Dictionary<string, bool>();
+        Dictionary<string, float> floatDict = new();
+        Dictionary<string, string> stringDict = new();
+        Dictionary<string, bool> boolDict = new();
 
         foreach (var variable in variables)
         {
