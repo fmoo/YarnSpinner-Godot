@@ -115,7 +115,7 @@ public partial class OptionsListView : Node, DialogueViewBase
                 // The first available option is selected by default
                 if (optionViewsCreated == 0)
                 {
-                    optionView.GrabFocus();
+                    optionView.FocusButton();
                 }
 
                 optionViewsCreated += 1;
@@ -196,7 +196,7 @@ public partial class OptionsListView : Node, DialogueViewBase
                 }
             }
             // If the user is hiding unavailable options, select the first visible one.
-            optionViews.First(view => view.Visible).GrabFocus();
+            optionViews.First(view => view.Visible).FocusButton();
         }
         catch (Exception e)
         {

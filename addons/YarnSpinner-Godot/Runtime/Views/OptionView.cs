@@ -4,16 +4,22 @@ using Godot;
 
 namespace YarnSpinnerGodot;
 
-public partial class OptionView : BaseButton
+public partial class OptionView : Control
 {
     [Export] bool showCharacterName = false;
     [Export] private RichTextLabel label;
+    [Export] private BaseButton button;
     public Action<DialogueOption> OnOptionSelected;
     public MarkupPalette palette;
 
     private DialogueOption _option;
 
     private bool hasSubmittedOptionSelection = false;
+
+    public void FocusButton()
+    {
+        button.GrabFocus();
+    }
 
     public DialogueOption Option
     {
@@ -48,13 +54,13 @@ public partial class OptionView : BaseButton
                 label.Text = $"[center]{line.Text}[/center]";
             }
 
-            Disabled = !value.IsAvailable;
+            button.Disabled = !value.IsAvailable;
         }
     }
 
     public override void _Ready()
     {
-        Connect(BaseButton.SignalName.Pressed, Callable.From(InvokeOptionSelected));
+        button.Connect(BaseButton.SignalName.Pressed, Callable.From(InvokeOptionSelected));
     }
 
     /// <summary>
